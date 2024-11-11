@@ -1,0 +1,1507 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Inventory Management System API</title>
+    <style type="text/css">
+      body {
+      	font-family: Trebuchet MS, sans-serif;
+      	font-size: 15px;
+      	color: #444;
+      	margin-right: 24px;
+      }
+      
+      h1	{
+      	font-size: 25px;
+      }
+      h2	{
+      	font-size: 20px;
+      }
+      h3	{
+      	font-size: 16px;
+      	font-weight: bold;
+      }
+      hr	{
+      	height: 1px;
+      	border: 0;
+      	color: #ddd;
+      	background-color: #ddd;
+      }
+      
+      .app-desc {
+        clear: both;
+        margin-left: 20px;
+      }
+      .param-name {
+        width: 100%;
+      }
+      .license-info {
+        margin-left: 20px;
+      }
+      
+      .license-url {
+        margin-left: 20px;
+      }
+      
+      .model {
+        margin: 0 0 0px 20px;
+      }
+      
+      .method {
+        margin-left: 20px;
+      }
+      
+      .method-notes	{
+      	margin: 10px 0 20px 0;
+      	font-size: 90%;
+      	color: #555;
+      }
+      
+      pre {
+        padding: 10px;
+        margin-bottom: 2px;
+      }
+      
+      .http-method {
+       text-transform: uppercase;
+      }
+      
+      pre.get {
+        background-color: #0f6ab4;
+      }
+      
+      pre.post {
+        background-color: #10a54a;
+      }
+      
+      pre.put {
+        background-color: #c5862b;
+      }
+      
+      pre.delete {
+        background-color: #a41e22;
+      }
+      
+      .huge	{
+      	color: #fff;
+      }
+      
+      pre.example {
+        background-color: #f3f3f3;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+      
+      code {
+        white-space: pre;
+      }
+      
+      .nickname {
+        font-weight: bold;
+      }
+      
+      .method-path {
+        font-size: 1.5em;
+        background-color: #0f6ab4;
+      }
+      
+      .up {
+        float:right;
+      }
+      
+      .parameter {
+        width: 500px;
+      }
+      
+      .param {
+        width: 500px;
+        padding: 10px 0 0 20px;
+        font-weight: bold;
+      }
+      
+      .param-desc {
+        width: 700px;
+        padding: 0 0 0 20px;
+        color: #777;
+      }
+      
+      .param-type {
+        font-style: italic;
+      }
+      
+      .param-enum-header {
+      width: 700px;
+      padding: 0 0 0 60px;
+      color: #777;
+      font-weight: bold;
+      }
+      
+      .param-enum {
+      width: 700px;
+      padding: 0 0 0 80px;
+      color: #777;
+      font-style: italic;
+      }
+      
+      .field-label {
+        padding: 0;
+        margin: 0;
+        clear: both;
+      }
+      
+      .field-items	{
+      	padding: 0 0 15px 0;
+      	margin-bottom: 15px;
+      }
+      
+      .return-type {
+        clear: both;
+        padding-bottom: 10px;
+      }
+      
+      .param-header {
+        font-weight: bold;
+      }
+      
+      .method-tags {
+        text-align: right;
+      }
+      
+      .method-tag {
+        background: none repeat scroll 0% 0% #24A600;
+        border-radius: 3px;
+        padding: 2px 10px;
+        margin: 2px;
+        color: #FFF;
+        display: inline-block;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+  <h1>Inventory Management System API</h1>
+    <div class="app-desc">API documentation for managing inventory, suppliers, products, and orders</div>
+    <div class="app-desc">More information: <a href="https://sumanbisunkhe.github.io/website/">https://sumanbisunkhe.github.io/website/</a></div>
+    <div class="app-desc">Contact Info: <a href="sumanbisunkhe304@.com">sumanbisunkhe304@.com</a></div>
+    <div class="app-desc">Version: 1.0.0</div>
+    
+    <div class="license-info">Apache 2.0</div>
+    <div class="license-url">http://www.apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+    <ol>
+      <li></li>
+    </ol>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#Authentication">Authentication</a></h4>
+  <ul>
+  <li><a href="#login"><code><span class="http-method">post</span> /api/auth/login</code></a></li>
+  </ul>
+  <h4><a href="#CSVOperations">CSVOperations</a></h4>
+  <ul>
+  <li><a href="#exportOrdersToCSV"><code><span class="http-method">post</span> /api/csv/export/orders</code></a></li>
+  <li><a href="#exportProductsToCSV"><code><span class="http-method">post</span> /api/csv/export/products</code></a></li>
+  <li><a href="#importOrdersFromCSV"><code><span class="http-method">post</span> /api/csv/import/orders</code></a></li>
+  <li><a href="#importProductsFromCSV"><code><span class="http-method">post</span> /api/csv/import/products</code></a></li>
+  </ul>
+  <h4><a href="#OrderController">OrderController</a></h4>
+  <ul>
+  <li><a href="#createOrder"><code><span class="http-method">post</span> /api/orders</code></a></li>
+  <li><a href="#deleteOrder"><code><span class="http-method">delete</span> /api/orders/{id}</code></a></li>
+  <li><a href="#getAllOrders"><code><span class="http-method">get</span> /api/orders</code></a></li>
+  <li><a href="#getOrderById"><code><span class="http-method">get</span> /api/orders/{id}</code></a></li>
+  <li><a href="#updateOrder"><code><span class="http-method">put</span> /api/orders/{id}</code></a></li>
+  </ul>
+  <h4><a href="#ProductController">ProductController</a></h4>
+  <ul>
+  <li><a href="#createProduct"><code><span class="http-method">post</span> /api/products/create</code></a></li>
+  <li><a href="#deleteProduct"><code><span class="http-method">delete</span> /api/products/delete/{productId}</code></a></li>
+  <li><a href="#getAllProducts"><code><span class="http-method">get</span> /api/products/all</code></a></li>
+  <li><a href="#getProductById"><code><span class="http-method">get</span> /api/products/{productId}</code></a></li>
+  <li><a href="#updateProduct"><code><span class="http-method">put</span> /api/products/update/{productId}</code></a></li>
+  </ul>
+  <h4><a href="#SupplierController">SupplierController</a></h4>
+  <ul>
+  <li><a href="#deleteSupplier"><code><span class="http-method">delete</span> /api/suppliers/{id}</code></a></li>
+  <li><a href="#getAllSuppliers"><code><span class="http-method">get</span> /api/suppliers</code></a></li>
+  <li><a href="#getSupplierById"><code><span class="http-method">get</span> /api/suppliers/{id}</code></a></li>
+  </ul>
+  <h4><a href="#UserController">UserController</a></h4>
+  <ul>
+  <li><a href="#activateUser"><code><span class="http-method">post</span> /api/users/activate/{userId}</code></a></li>
+  <li><a href="#deactivateUser"><code><span class="http-method">post</span> /api/users/deactivate/{userId}</code></a></li>
+  <li><a href="#deleteUser"><code><span class="http-method">delete</span> /api/users/delete/{userId}</code></a></li>
+  <li><a href="#findByEmail"><code><span class="http-method">get</span> /api/users/email/{email}</code></a></li>
+  <li><a href="#findByUsername"><code><span class="http-method">get</span> /api/users/username/{username}</code></a></li>
+  <li><a href="#getAllUsers"><code><span class="http-method">get</span> /api/users/all</code></a></li>
+  <li><a href="#getUserById"><code><span class="http-method">get</span> /api/users/{userId}</code></a></li>
+  <li><a href="#registerUser"><code><span class="http-method">post</span> /api/users/register</code></a></li>
+  <li><a href="#updateUser"><code><span class="http-method">put</span> /api/users/update/{userId}</code></a></li>
+  </ul>
+
+  <h1><a name="Authentication">Authentication</a></h1>
+  <div class="method"><a name="login"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/auth/login</code></pre></div>
+    <div class="method-summary">User login (<span class="nickname">login</span>)</div>
+    <div class="method-notes">Authenticate a user and return a JWT token upon successful login.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#AuthenticationRequest">AuthenticationRequest</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#AuthenticationResponse">AuthenticationResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">401</h4>
+    Invalid credentials
+        <a href="#"></a>
+    <h4 class="field-label">200</h4>
+    Successful authentication
+        <a href="#AuthenticationResponse">AuthenticationResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="CSVOperations">CSVOperations</a></h1>
+  <div class="method"><a name="exportOrdersToCSV"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/csv/export/orders</code></pre></div>
+    <div class="method-summary">Export Orders to CSV (<span class="nickname">exportOrdersToCSV</span>)</div>
+    <div class="method-notes">Exports all orders from the database to a CSV file at the specified file path.</div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">filePath (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Orders exported successfully
+        <a href="#"></a>
+    <h4 class="field-label">500</h4>
+    Internal server error
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="exportProductsToCSV"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/csv/export/products</code></pre></div>
+    <div class="method-summary">Export Products to CSV (<span class="nickname">exportProductsToCSV</span>)</div>
+    <div class="method-notes">Exports all products from the database to a CSV file at the specified file path.</div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">filePath (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">500</h4>
+    Internal server error
+        <a href="#"></a>
+    <h4 class="field-label">200</h4>
+    Products exported successfully
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="importOrdersFromCSV"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/csv/import/orders</code></pre></div>
+    <div class="method-summary">Import Orders from CSV (<span class="nickname">importOrdersFromCSV</span>)</div>
+    <div class="method-notes">Imports orders from a CSV file into the database.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>multipart/form-data</code></li>
+    </ul>
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#OrderDto">OrderDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Orders imported successfully
+        <a href="#OrderDto">OrderDto</a>
+    <h4 class="field-label">500</h4>
+    Failed to import orders
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="importProductsFromCSV"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/csv/import/products</code></pre></div>
+    <div class="method-summary">Import Products from CSV (<span class="nickname">importProductsFromCSV</span>)</div>
+    <div class="method-notes">Imports products from a CSV file into the database.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>multipart/form-data</code></li>
+    </ul>
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ProductDto">ProductDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">500</h4>
+    Failed to import products
+        <a href="#"></a>
+    <h4 class="field-label">200</h4>
+    Products imported successfully
+        <a href="#ProductDto">ProductDto</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="OrderController">OrderController</a></h1>
+  <div class="method"><a name="createOrder"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/orders</code></pre></div>
+    <div class="method-summary">Create a new order (<span class="nickname">createOrder</span>)</div>
+    <div class="method-notes">Creates a new order from the provided order details.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#OrderDto">OrderDto</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">400</h4>
+    Validation errors
+        <a href="#Object">Object</a>
+    <h4 class="field-label">201</h4>
+    Order created successfully
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteOrder"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /api/orders/{id}</code></pre></div>
+    <div class="method-summary">Delete an order (<span class="nickname">deleteOrder</span>)</div>
+    <div class="method-notes">Deletes an order with the specified ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">404</h4>
+    Order not found
+        <a href="#Object">Object</a>
+    <h4 class="field-label">200</h4>
+    Order deleted successfully
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllOrders"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/orders</code></pre></div>
+    <div class="method-summary">Get all orders (<span class="nickname">getAllOrders</span>)</div>
+    <div class="method-notes">Retrieves a list of all orders in the system.</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#OrderDto">OrderDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Orders retrieved successfully
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getOrderById"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/orders/{id}</code></pre></div>
+    <div class="method-summary">Get an order by ID (<span class="nickname">getOrderById</span>)</div>
+    <div class="method-notes">Retrieves an order by its unique ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">404</h4>
+    Order not found
+        <a href="#Object">Object</a>
+    <h4 class="field-label">200</h4>
+    Order found
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateOrder"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /api/orders/{id}</code></pre></div>
+    <div class="method-summary">Update an existing order (<span class="nickname">updateOrder</span>)</div>
+    <div class="method-notes">Updates the order details for the specified order ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#OrderDto">OrderDto</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">404</h4>
+    Order not found
+        <a href="#Object">Object</a>
+    <h4 class="field-label">200</h4>
+    Order updated successfully
+        <a href="#Object">Object</a>
+    <h4 class="field-label">400</h4>
+    Validation errors
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="ProductController">ProductController</a></h1>
+  <div class="method"><a name="createProduct"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/products/create</code></pre></div>
+    <div class="method-summary">Create a new product (<span class="nickname">createProduct</span>)</div>
+    <div class="method-notes">Creates a new product in the system with the provided details.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#ProductDto">ProductDto</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    Product created successfully
+        <a href="#Object">Object</a>
+    <h4 class="field-label">400</h4>
+    Validation errors occurred
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteProduct"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /api/products/delete/{productId}</code></pre></div>
+    <div class="method-summary">Delete a product by ID (<span class="nickname">deleteProduct</span>)</div>
+    <div class="method-notes">Deletes an existing product using its ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">productId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      String
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">404</h4>
+    Product not found
+        <a href="#String">String</a>
+    <h4 class="field-label">200</h4>
+    Product deleted successfully
+        <a href="#String">String</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllProducts"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/products/all</code></pre></div>
+    <div class="method-summary">Get all products (<span class="nickname">getAllProducts</span>)</div>
+    <div class="method-notes">Retrieves a list of all products in the system.</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#ProductDto">ProductDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    List of products retrieved successfully
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getProductById"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/products/{productId}</code></pre></div>
+    <div class="method-summary">Get a product by ID (<span class="nickname">getProductById</span>)</div>
+    <div class="method-notes">Retrieves a product&#x27;s details by its ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">productId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">404</h4>
+    Product not found
+        <a href="#Object">Object</a>
+    <h4 class="field-label">200</h4>
+    Product retrieved successfully
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateProduct"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /api/products/update/{productId}</code></pre></div>
+    <div class="method-summary">Update a product (<span class="nickname">updateProduct</span>)</div>
+    <div class="method-notes">Updates an existing product using its ID and the provided updated details.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">productId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#ProductDto">ProductDto</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Product updated successfully
+        <a href="#Object">Object</a>
+    <h4 class="field-label">404</h4>
+    Product not found
+        <a href="#Object">Object</a>
+    <h4 class="field-label">400</h4>
+    Validation errors occurred
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="SupplierController">SupplierController</a></h1>
+  <div class="method"><a name="deleteSupplier"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /api/suppliers/{id}</code></pre></div>
+    <div class="method-summary">Delete supplier by ID (<span class="nickname">deleteSupplier</span>)</div>
+    <div class="method-notes">Deletes an existing supplier by their unique ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of the supplier to delete format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      String
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">404</h4>
+    Supplier not found with the provided ID
+        <a href="#String">String</a>
+    <h4 class="field-label">200</h4>
+    Supplier deleted successfully
+        <a href="#String">String</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllSuppliers"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/suppliers</code></pre></div>
+    <div class="method-summary">Get all suppliers (<span class="nickname">getAllSuppliers</span>)</div>
+    <div class="method-notes">Fetches a list of all suppliers in the system.</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#SupplierDto">SupplierDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">500</h4>
+    Internal server error
+        
+    <h4 class="field-label">200</h4>
+    List of suppliers fetched successfully
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSupplierById"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/suppliers/{id}</code></pre></div>
+    <div class="method-summary">Get supplier by ID (<span class="nickname">getSupplierById</span>)</div>
+    <div class="method-notes">Fetches a supplier&#x27;s details by their unique ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; ID of the supplier to retrieve format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#SupplierDto">SupplierDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Supplier details fetched successfully
+        <a href="#SupplierDto">SupplierDto</a>
+    <h4 class="field-label">404</h4>
+    Supplier not found with the provided ID
+        <a href="#SupplierDto">SupplierDto</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="UserController">UserController</a></h1>
+  <div class="method"><a name="activateUser"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/users/activate/{userId}</code></pre></div>
+    <div class="method-summary">Activate user (<span class="nickname">activateUser</span>)</div>
+    <div class="method-notes">Activates a user by their ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">userId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">404</h4>
+    User not found with the provided ID
+        <a href="#Object">Object</a>
+    <h4 class="field-label">200</h4>
+    User activated successfully
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deactivateUser"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/users/deactivate/{userId}</code></pre></div>
+    <div class="method-summary">Deactivate user (<span class="nickname">deactivateUser</span>)</div>
+    <div class="method-notes">Deactivates a user by their ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">userId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User deactivated successfully
+        <a href="#Object">Object</a>
+    <h4 class="field-label">404</h4>
+    User not found with the provided ID
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteUser"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /api/users/delete/{userId}</code></pre></div>
+    <div class="method-summary">Delete user by ID (<span class="nickname">deleteUser</span>)</div>
+    <div class="method-notes">Deletes a user by their unique ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">userId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      String
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User deleted successfully
+        <a href="#String">String</a>
+    <h4 class="field-label">404</h4>
+    User not found with the provided ID
+        <a href="#String">String</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="findByEmail"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/users/email/{email}</code></pre></div>
+    <div class="method-summary">Find user by email (<span class="nickname">findByEmail</span>)</div>
+    <div class="method-notes">Fetches a user by their email.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">email (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User details fetched successfully
+        <a href="#Object">Object</a>
+    <h4 class="field-label">404</h4>
+    User not found with the provided email
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="findByUsername"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/users/username/{username}</code></pre></div>
+    <div class="method-summary">Find user by username (<span class="nickname">findByUsername</span>)</div>
+    <div class="method-notes">Fetches a user by their username.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">404</h4>
+    User not found with the provided username
+        <a href="#Object">Object</a>
+    <h4 class="field-label">200</h4>
+    User details fetched successfully
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllUsers"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/users/all</code></pre></div>
+    <div class="method-summary">Get all users (<span class="nickname">getAllUsers</span>)</div>
+    <div class="method-notes">Fetches a list of all users in the system.</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#UserDto">UserDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    List of users fetched successfully
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUserById"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/users/{userId}</code></pre></div>
+    <div class="method-summary">Get user by ID (<span class="nickname">getUserById</span>)</div>
+    <div class="method-notes">Fetches the details of a user by their unique ID.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">userId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User details fetched successfully
+        <a href="#Object">Object</a>
+    <h4 class="field-label">404</h4>
+    User not found with the provided ID
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="registerUser"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/users/register</code></pre></div>
+    <div class="method-summary">Register a new user (<span class="nickname">registerUser</span>)</div>
+    <div class="method-notes">Registers a new user with the provided details.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#UserDto">UserDto</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">400</h4>
+    Validation errors in user data
+        <a href="#Object">Object</a>
+    <h4 class="field-label">201</h4>
+    User registered successfully
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateUser"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /api/users/update/{userId}</code></pre></div>
+    <div class="method-summary">Update user details (<span class="nickname">updateUser</span>)</div>
+    <div class="method-notes">Updates the details of an existing user.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">userId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#UserDto">UserDto</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>*/*</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">400</h4>
+    Validation errors in user data
+        <a href="#Object">Object</a>
+    <h4 class="field-label">200</h4>
+    User updated successfully
+        <a href="#Object">Object</a>
+    <h4 class="field-label">404</h4>
+    User not found with the provided ID
+        <a href="#Object">Object</a>
+  </div> <!-- method -->
+  <hr/>
+
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#AuthenticationRequest"><code>AuthenticationRequest</code></a></li>
+    <li><a href="#AuthenticationResponse"><code>AuthenticationResponse</code></a></li>
+    <li><a href="#OrderDto"><code>OrderDto</code></a></li>
+    <li><a href="#ProductDto"><code>ProductDto</code></a></li>
+    <li><a href="#SupplierDto"><code>SupplierDto</code></a></li>
+    <li><a href="#UserDto"><code>UserDto</code></a></li>
+  </ol>
+
+  <div class="model">
+    <h3><a name="AuthenticationRequest"><code>AuthenticationRequest</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">identifier </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User identifier which can be either username, email, or phone number </div>
+<div class="param">password </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User&#x27;s password for authentication </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="AuthenticationResponse"><code>AuthenticationResponse</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">jwt (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> JWT token generated after successful authentication </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Message indicating the result of the authentication process </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrderDto"><code>OrderDto</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> Unique identifier for the order format: int64</div>
+<div class="param">orderDate </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Date and time when the order was placed format: date-time</div>
+<div class="param">totalAmount </div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span> Total amount for the order </div>
+<div class="param">productIds </div><div class="param-desc"><span class="param-type"><a href="#long">array[Long]</a></span> List of product IDs included in the order format: int64</div>
+<div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> Unique identifier of the user who placed the order format: int64</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ProductDto"><code>ProductDto</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> Unique identifier for the product format: int64</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Name of the product </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Description of the product </div>
+<div class="param">price </div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span> Price of the product </div>
+<div class="param">stockQuantity </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Quantity of the product in stock format: int32</div>
+<div class="param">supplierId </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> Unique identifier of the supplier associated with this product format: int64</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="SupplierDto"><code>SupplierDto</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> Unique identifier for the supplier format: int64</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Name of the supplier </div>
+<div class="param">contactNumber </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Contact number of the supplier </div>
+<div class="param">address </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Physical address of the supplier </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UserDto"><code>UserDto</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> Unique identifier for the user format: int64</div>
+<div class="param">username </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Username for the user </div>
+<div class="param">password </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Password for the user account (hashed) </div>
+<div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Email address for the user </div>
+<div class="param">fullName </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Full name of the user </div>
+<div class="param">roles </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> Roles assigned to the user </div>
+<div class="param">dateOfBirth </div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span> Date of birth of the user in dd-MM-yyyy format format: date</div>
+<div class="param">phoneNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Phone number of the user </div>
+<div class="param">address (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Address of the user </div>
+<div class="param">isActive (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Indicates if the user&#x27;s account is active </div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+</html>
