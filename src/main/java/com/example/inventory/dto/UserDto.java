@@ -47,11 +47,11 @@ public class UserDto {
     private LocalDate dateOfBirth;
 
     @Pattern(regexp = "^[+]?\\d{10,15}$", message = "Phone number should be valid and between 10-15 digits")
-    @Schema(description = "Phone number of the user", example = "+123456789", required = false)
+    @Schema(description = "Phone number of the user", example = "+123456789", required = true)
     private String phoneNumber;
 
     @Size(max = 255, message = "Address cannot exceed 255 characters")
-    @Schema(description = "Address of the user", example = "1234 Elm Street, Springfield, IL", required = false)
+    @Schema(description = "Address of the user", example = "1234 Elm Street, Springfield, IL", required = true)
     private String address;
 
     @Schema(description = "Indicates if the user's account is active", example = "true", required = false)
