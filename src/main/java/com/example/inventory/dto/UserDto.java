@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -56,4 +57,11 @@ public class UserDto {
 
     @Schema(description = "Indicates if the user's account is active", example = "true", required = false)
     private Boolean isActive;
+    @JsonFormat(pattern = "EEEE, MMMM d, yyyy, h:mm a")
+    @Schema(description = "Timestamp when the user account was created", example = "Monday, November 11, 2024, 2:20 PM")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "EEEE, MMMM d, yyyy, h:mm a")
+    @Schema(description = "Timestamp when the user account was last updated", example = "Tuesday, November 12, 2024, 3:25 PM")
+    private LocalDateTime updatedAt;
 }
