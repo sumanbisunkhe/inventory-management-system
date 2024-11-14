@@ -61,8 +61,10 @@ public class SupplierServiceImpl implements SupplierService {
 
 
 
+
+
     // Map SupplierDto to SupplierProfile entity
-    private SupplierProfile mapToEntity(SupplierDto supplierDto) {
+    public SupplierProfile mapToEntity(SupplierDto supplierDto) {
         SupplierProfile supplier = new SupplierProfile();
         supplier.setName(supplierDto.getName());
         supplier.setContactNumber(supplierDto.getContactNumber());
@@ -71,7 +73,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     // Map SupplierProfile entity to SupplierDto
-    private SupplierDto mapToDto(SupplierProfile supplier) {
+    public SupplierDto mapToDto(SupplierProfile supplier) {
         SupplierDto supplierDto = new SupplierDto();
         supplierDto.setId(supplier.getId());
         supplierDto.setName(supplier.getName());

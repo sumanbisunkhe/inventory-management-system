@@ -38,15 +38,6 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        // Allow public access to Swagger UI endpoints
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
-
                         // Public access for registration and login
                         .requestMatchers("/api/users/register", "/api/auth/login").permitAll()
 

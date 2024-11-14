@@ -29,10 +29,16 @@ public class ProductServiceImpl implements ProductService {
         // Map DTO to Entity
         Product product = mapToEntity(productDto);
 
-        // Set the SupplierProfile entity from SupplierService
+        // Fetch the SupplierProfile based on the supplierId from the productDto
         SupplierProfile supplierProfile = supplierService.getSupplierProfileById(productDto.getSupplierId());
-        product.setSupplierProfile(supplierProfile); // Assuming your Product entity has a SupplierProfile reference
 
+        if (supplierProfile != null) {
+            // Log or assert to check if the supplierProfile is properly retrieved
+            System.out.println("SupplierProfile fetched: " + supplierProfile.getId());
+            product.setSupplierProfile(supplierProfile); // Set supplierProfile if not null
+        } else {
+            throw new IllegalArgumentException("Supplier not found for ID: " + productDto.getSupplierId());
+        }
 
         // Save Product entity
         product = productRepo.save(product);
@@ -42,25 +48,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(Long id, ProductDto productDto) {
-        // Find existing Product or throw exception
-        Product existingProduct = productRepo.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+    public ProductDto updateProduct(Long productId, ProductDto productDto) {
+        Product existingProduct = productRepo.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found for ID: " + productId));
 
-        // Update product details
-        existingProduct.setName(productDto.getName());
-        existingProduct.setDescription(productDto.getDescription());
-        existingProduct.setPrice(productDto.getPrice());
-        existingProduct.setStockQuantity(productDto.getStockQuantity());
+        if (productDto == null) {
+            throw new IllegalArgumentException("ProductDto must not be null");
+        }
 
-        // Update SupplierProfile
+        BeanUtils.copyProperties(productDto, existingProduct);
+
         SupplierProfile supplierProfile = supplierService.getSupplierProfileById(productDto.getSupplierId());
-        existingProduct.setSupplierProfile(supplierProfile);
+        if (supplierProfile != null) {
+            existingProduct.setSupplierProfile(supplierProfile);
+        } else {
+            throw new IllegalArgumentException("Supplier not found for ID: " + productDto.getSupplierId());
+        }
 
-        // Save updated Product
         Product updatedProduct = productRepo.save(existingProduct);
+        if (updatedProduct == null) {
+            throw new IllegalStateException("Failed to save the updated product");
+        }
 
-        // Convert back to DTO
         return mapToDto(updatedProduct);
     }
 
@@ -71,6 +80,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
         productRepo.delete(product);
     }
+
 
     @Override
     public ProductDto getProductById(Long id) {
@@ -87,11 +97,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductDto mapToDto(Product product) {
+        if (product == null) {
+            return null; // Return null if product is null, or handle it as needed
+        }
+
         ProductDto productDto = new ProductDto();
-        BeanUtils.copyProperties(product, productDto);
-        productDto.setSupplierId(product.getSupplierProfile().getId()); // Update to match SupplierProfile
+        productDto.setId(product.getId());
+        productDto.setName(product.getName());
+        productDto.setDescription(product.getDescription());
+        productDto.setPrice(product.getPrice());
+        productDto.setStockQuantity(product.getStockQuantity());
+
+        // Check if supplierProfile is null to avoid NullPointerException
+        if (product.getSupplierProfile() != null) {
+            productDto.setSupplierId(product.getSupplierProfile().getId());
+        } else {
+            productDto.setSupplierId(null);  // Handle the case when supplierProfile is null
+        }
+
         return productDto;
     }
+
+
+
 
     private Product mapToEntity(ProductDto productDto) {
         Product product = new Product();

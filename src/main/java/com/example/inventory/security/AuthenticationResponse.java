@@ -1,6 +1,5 @@
 package com.example.inventory.security;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 /**
@@ -10,16 +9,8 @@ import lombok.Getter;
 @Getter
 public class AuthenticationResponse {
 
-    @Schema(
-            description = "JWT token generated after successful authentication",
-            example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-    )
     private final String jwt;
 
-    @Schema(
-            description = "Message indicating the result of the authentication process",
-            example = "Authentication successful"
-    )
     private final String message;
 
     public AuthenticationResponse(String jwt, String message) {

@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,12 +55,32 @@ public class CSVServiceImpl implements CSVService {
         try {
             log.info("Starting to export orders to CSV: {}", filePath);
             List<Order> orders = orderRepository.findAll();
-            csvUtils.exportOrdersToCSV(orders, filePath);  // Call non-static method through instance
+
+            // Handle null values for product lists, totalAmount, orderDate, and user
+            orders.forEach(order -> {
+                if (order.getProducts() == null) {
+                    order.setProducts(new ArrayList<>());
+                }
+                if (order.getTotalAmount() == null) {
+                    order.setTotalAmount(BigDecimal.ZERO);  // Set a default amount if needed
+                }
+                if (order.getOrderDate() == null) {
+                    order.setOrderDate(LocalDateTime.now());  // Set a default order date if needed
+                }
+                if (order.getUser() == null) {
+                    log.warn("Order with ID {} has no associated user.", order.getId());
+                }
+            });
+
+            csvUtils.exportOrdersToCSV(orders, filePath);
             log.info("Successfully exported orders to CSV: {}", filePath);
         } catch (Exception e) {
             log.error("Error exporting orders to CSV", e);
         }
     }
+
+
+
 
     @Override
     public List<OrderDto> importOrdersFromCSV(String filePath) {

@@ -4,16 +4,15 @@ import com.example.inventory.dto.UserDto;
 import com.example.inventory.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,19 +28,18 @@ public class UserController {
      * @param bindingResult Validation errors if any
      * @return Confirmation message and user details
      */
-    @Operation(summary = "Register a new user", description = "Registers a new user with the provided details.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User registered successfully"),
-            @ApiResponse(responseCode = "400", description = "Validation errors in user data")
-    })
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto userDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            // Collect validation errors and return them
+            // Collect validation errors and return them as a JSON response with a "message" field
             List<String> errors = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + ": " + error.getDefaultMessage())
                     .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", errors);
+            return ResponseEntity.badRequest().body(response);
+
         }
 
         UserDto registeredUser = userService.registerUser(userDto);
@@ -56,12 +54,6 @@ public class UserController {
      * @param bindingResult Validation errors if any
      * @return Confirmation message with updated user details
      */
-    @Operation(summary = "Update user details", description = "Updates the details of an existing user.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Validation errors in user data"),
-            @ApiResponse(responseCode = "404", description = "User not found with the provided ID")
-    })
     @PutMapping("/update/{userId}")
     public ResponseEntity<?> updateUser(@PathVariable Long userId,
                                         @Valid @RequestBody UserDto userDto,
@@ -84,11 +76,6 @@ public class UserController {
      * @param userId User ID to fetch details
      * @return User details or error message if not found
      */
-    @Operation(summary = "Get user by ID", description = "Fetches the details of a user by their unique ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User details fetched successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found with the provided ID")
-    })
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable Long userId) {
         try {
@@ -104,8 +91,6 @@ public class UserController {
      * Get all users
      * @return List of all users
      */
-    @Operation(summary = "Get all users", description = "Fetches a list of all users in the system.")
-    @ApiResponse(responseCode = "200", description = "List of users fetched successfully")
     @GetMapping("/all")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
@@ -117,11 +102,6 @@ public class UserController {
      * @param userId User ID to delete
      * @return Confirmation message or error if user not found
      */
-    @Operation(summary = "Delete user by ID", description = "Deletes a user by their unique ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found with the provided ID")
-    })
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
         try {
@@ -138,11 +118,6 @@ public class UserController {
      * @param userId User ID to activate
      * @return Confirmation message with current status
      */
-    @Operation(summary = "Activate user", description = "Activates a user by their ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User activated successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found with the provided ID")
-    })
     @PostMapping("/activate/{userId}")
     public ResponseEntity<?> activateUser(@PathVariable Long userId) {
         try {
@@ -160,11 +135,6 @@ public class UserController {
      * @param userId User ID to deactivate
      * @return Confirmation message with current status
      */
-    @Operation(summary = "Deactivate user", description = "Deactivates a user by their ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User deactivated successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found with the provided ID")
-    })
     @PostMapping("/deactivate/{userId}")
     public ResponseEntity<?> deactivateUser(@PathVariable Long userId) {
         try {
@@ -182,11 +152,6 @@ public class UserController {
      * @param username Username to search for
      * @return User details or error message if not found
      */
-    @Operation(summary = "Find user by username", description = "Fetches a user by their username.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User details fetched successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found with the provided username")
-    })
     @GetMapping("/username/{username}")
     public ResponseEntity<?> findByUsername(@PathVariable String username) {
         try {
@@ -203,11 +168,6 @@ public class UserController {
      * @param email Email to search for
      * @return User details or error message if not found
      */
-    @Operation(summary = "Find user by email", description = "Fetches a user by their email.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User details fetched successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found with the provided email")
-    })
     @GetMapping("/email/{email}")
     public ResponseEntity<?> findByEmail(@PathVariable String email) {
         try {

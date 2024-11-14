@@ -1,8 +1,9 @@
 package com.example.inventory.service.impl;
 
 
-import com.example.inventory.repo.RoleRepo;
-import com.example.inventory.repo.UserRepo;
+import com.example.inventory.model.Order;
+import com.example.inventory.model.Product;
+import com.example.inventory.repo.*;
 import com.example.inventory.dto.UserDto;
 import com.example.inventory.model.Role;
 import com.example.inventory.model.User;
@@ -13,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -33,10 +35,13 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepo userRepository;
+    private final OrderRepo orderRepository;
+    private final ProductRepo productRepository;
     private final RoleRepo roleRepo;
     private final ModelMapper modelMapper;
     private final EmailService emailService;
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final SupplierRepo supplierRepo;
 
     @Override
     public UserDto registerUser(UserDto userDto) {
@@ -109,56 +114,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
+        // Fetch the user to be updated
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
-        // Check if the currently authenticated user is allowed to assign ADMIN role
-        Set<String> currentUserRoles = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
+        // Get the current authenticated user and their roles
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> currentUserRoles = auth.getAuthorities();
+        boolean isAdmin = currentUserRoles.stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 
-        // Ensure only an ADMIN can update a user's role to ADMIN
-        if (userDto.getRoles().contains("ADMIN") && !currentUserRoles.contains("ROLE_ADMIN")) {
-            throw new AccessDeniedException("Only ADMIN users can assign ADMIN role.");
+        // If the authenticated user is not an admin, prevent role changes to ADMIN
+        if (!isAdmin && userDto.getRoles().contains("ADMIN")) {
+            throw new AccessDeniedException("Only admins can assign or update the ADMIN role.");
         }
 
-        // Update the password if it's provided
+        // Update roles if provided in userDto
+        Set<Role> updatedRoles = new HashSet<>();
+        for (String roleName : userDto.getRoles()) {
+            Role role = roleRepo.findByName(roleName)
+                    .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
+            updatedRoles.add(role);
+        }
+
+        // Update fields
+        existingUser.setFullName(userDto.getFullName());
+        existingUser.setEmail(userDto.getEmail());
         if (userDto.getPassword() != null) {
-            existingUser.setPassword(passwordEncoder.encode(userDto.getPassword())); // Encrypt if password is being updated
+            existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         }
+        existingUser.setRoles(updatedRoles);
 
-        // Set roles based on the provided roles in UserDto and current user permissions
-        Set<Role> roles = userDto.getRoles().stream()
-                .map(roleName -> roleRepo.findByName(roleName)
-                        .orElseThrow(() -> new RuntimeException("Role not found: " + roleName)))
-                .collect(Collectors.toSet());
-        existingUser.setRoles(roles);
-
-        // Retain original createdAt and isActive values
-        LocalDateTime createdAt = existingUser.getCreatedAt();
-        Boolean isActive = existingUser.getIsActive();
-
-        // Configure modelMapper to skip the `id`, `createdAt`, and `isActive` fields mapping
-        modelMapper.typeMap(UserDto.class, User.class).addMappings(mapper -> {
-            mapper.skip(User::setId);
-            mapper.skip(User::setCreatedAt);
-            mapper.skip(User::setIsActive);
-            mapper.skip(User::setPassword);
-        });
-
-        // Map remaining fields from userDto to existingUser, excluding `id`, `createdAt`, and `isActive`
-        modelMapper.map(userDto, existingUser);
-
-        // Reapply the preserved values
-        existingUser.setCreatedAt(createdAt);
-        existingUser.setIsActive(isActive);
-
-        // Save the updated user to the repository
-        existingUser = userRepository.save(existingUser);
-        logger.info("Updated user: {}", existingUser.getUsername());
-        return modelMapper.map(existingUser, UserDto.class);
+        // Save and return updated user
+        User updatedUser = userRepository.save(existingUser);
+        return modelMapper.map(updatedUser, UserDto.class);
     }
-
 
 
 
@@ -197,11 +187,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userId) {
+        // Fetch the user by id, throwing an exception if not found
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        // Fetch all orders related to the user
+        Set<Order> userOrders = existingUser.getOrders();
+
+        if (userOrders != null) {
+            for (Order order : userOrders) {
+                // Remove the product associations from the order
+                // This only removes the link between orders and products, not the products themselves
+                order.getProducts().clear();  // This removes the relationship between the order and the products
+
+                // Delete the order itself (products should not be deleted)
+                orderRepository.delete(order);  // Deletes the order, but leaves the products intact
+            }
+        }
+
+        // Optionally, delete the supplier profile if applicable (if this is part of your business logic)
+        if (existingUser.getSupplierProfile() != null) {
+            supplierRepo.delete(existingUser.getSupplierProfile()); // If applicable
+        }
+
+        // Finally, delete the user
         userRepository.delete(existingUser);
         logger.info("Deleted user: {}", existingUser.getUsername());
     }
+
+
 
     @Override
     public UserDto activateUser(Long userId) {

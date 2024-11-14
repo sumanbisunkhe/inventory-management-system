@@ -3,9 +3,6 @@ package com.example.inventory.controller;
 import com.example.inventory.dto.OrderDto;
 import com.example.inventory.exceptions.OrderNotFoundException;
 import com.example.inventory.service.OrderService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,14 +21,13 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @Operation(
-            summary = "Create a new order",
-            description = "Creates a new order from the provided order details."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Order created successfully"),
-            @ApiResponse(responseCode = "400", description = "Validation errors")
-    })
+    /**
+     * Creates a new order from the provided order details.
+     *
+     * @param orderDto The order details.
+     * @param bindingResult The validation result for the order.
+     * @return ResponseEntity with the created order or validation errors.
+     */
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDto orderDto, BindingResult bindingResult) {
         // Handle validation errors
@@ -48,14 +44,12 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
 
-    @Operation(
-            summary = "Get an order by ID",
-            description = "Retrieves an order by its unique ID."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Order found"),
-            @ApiResponse(responseCode = "404", description = "Order not found")
-    })
+    /**
+     * Retrieves an order by its unique ID.
+     *
+     * @param id The order ID.
+     * @return ResponseEntity with the found order or error message.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable Long id) {
         try {
@@ -67,26 +61,25 @@ public class OrderController {
         }
     }
 
-    @Operation(
-            summary = "Get all orders",
-            description = "Retrieves a list of all orders in the system."
-    )
-    @ApiResponse(responseCode = "200", description = "Orders retrieved successfully")
+    /**
+     * Retrieves a list of all orders in the system.
+     *
+     * @return ResponseEntity with the list of orders.
+     */
     @GetMapping
     public ResponseEntity<List<OrderDto>> getAllOrders() {
         List<OrderDto> orderDtos = orderService.getAllOrders();
         return ResponseEntity.ok(orderDtos);
     }
 
-    @Operation(
-            summary = "Update an existing order",
-            description = "Updates the order details for the specified order ID."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Order updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Validation errors"),
-            @ApiResponse(responseCode = "404", description = "Order not found")
-    })
+    /**
+     * Updates the order details for the specified order ID.
+     *
+     * @param id The order ID.
+     * @param orderDto The updated order details.
+     * @param bindingResult The validation result for the updated order.
+     * @return ResponseEntity with the updated order or validation errors.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable Long id, @RequestBody @Valid OrderDto orderDto, BindingResult bindingResult) {
         // Handle validation errors
@@ -108,14 +101,12 @@ public class OrderController {
         }
     }
 
-    @Operation(
-            summary = "Delete an order",
-            description = "Deletes an order with the specified ID."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Order deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Order not found")
-    })
+    /**
+     * Deletes an order with the specified ID.
+     *
+     * @param id The order ID.
+     * @return ResponseEntity with a success message or error.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
         try {

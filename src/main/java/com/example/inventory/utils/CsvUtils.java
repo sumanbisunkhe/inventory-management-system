@@ -47,11 +47,12 @@ public class CsvUtils {
             writer.writeNext(header);
 
             for (Product product : products) {
+                String price = (product.getPrice() != null) ? product.getPrice().toString() : "N/A";
                 String[] data = {
                         product.getId().toString(),
                         product.getName(),
                         product.getDescription(),
-                        product.getPrice().toString(),
+                        price,
                         String.valueOf(product.getStockQuantity())
                 };
                 writer.writeNext(data);
@@ -61,6 +62,7 @@ public class CsvUtils {
             log.error("Error exporting products to CSV", e);
         }
     }
+
 
     // Import products from CSV file and save them to the database
     public List<ProductDto> importProductsFromCSV(String filePath) {
@@ -115,7 +117,6 @@ public class CsvUtils {
         return productDtos;
     }
 
-    // Export orders to CSV file
     public static void exportOrdersToCSV(List<Order> orders, String filePath) {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
             String[] header = {"Order ID", "Order Date", "Total Amount", "User ID", "Product IDs"};
@@ -127,11 +128,14 @@ public class CsvUtils {
                         .reduce((id1, id2) -> id1 + "," + id2)
                         .orElse("");
 
+                // Check if user is not null before accessing user ID
+                String userId = (order.getUser() != null) ? order.getUser().getId().toString() : "N/A";
+
                 String[] data = {
                         order.getId().toString(),
                         order.getOrderDate().toString(),
                         order.getTotalAmount().toString(),
-                        order.getUser().getId().toString(),
+                        userId,
                         productIds
                 };
                 writer.writeNext(data);

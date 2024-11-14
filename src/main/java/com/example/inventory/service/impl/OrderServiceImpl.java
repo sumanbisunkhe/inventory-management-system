@@ -31,24 +31,25 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto createOrder(OrderDto orderDto) {
+        // Initialize a new Order object
         Order order = new Order();
         BeanUtils.copyProperties(orderDto, order);
 
-        // Set the order date to the current date and time if it's not provided
+        // Set the order date to the current date and time
         order.setOrderDate(LocalDateTime.now());
 
         // Fetch products and calculate the total amount
         List<Product> products = orderDto.getProductIds().stream()
                 .map(id -> productRepo.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Product not found with id: " + id)))
+                        .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id)))
                 .collect(Collectors.toList());
         order.setProducts(products);
 
-        // Calculate the total amount based on product prices
+        // Calculate the total amount based on the product prices
         BigDecimal totalAmount = products.stream()
                 .map(Product::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        order.setTotalAmount(totalAmount);
+                .reduce(BigDecimal.ZERO, BigDecimal::add); // Summing all the product prices
+        order.setTotalAmount(totalAmount);  // Setting the total amount in the order
 
         // Fetch the user associated with the order
         User user = userRepo.findById(orderDto.getUserId())
@@ -58,6 +59,7 @@ public class OrderServiceImpl implements OrderService {
         // Save the order to the database
         Order savedOrder = orderRepo.save(order);
 
+        // Return the OrderDto after saving the order
         return mapToDto(savedOrder);
     }
 
