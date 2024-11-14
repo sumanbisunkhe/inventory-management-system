@@ -254,9 +254,6 @@ For detailed information, please refer to the [ Full API Documentation ](src/mai
 ## 📄 License
 This project is licensed under the [Apache License 2.0](LICENSE).
 
-Here’s how you can add an **Email Contact** section to the documentation in a visually appealing way:
-
-
 
 ## 📧 **Contact**
 
